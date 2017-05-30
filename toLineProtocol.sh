@@ -36,6 +36,8 @@
 #   - using "date" to parse the UTC date for each line is super slow, but
 #     works. There must be something better out there.
 
+set -e
+
 SRC_FILE=${1:-/dev/stdin}
 
 DATABASE=${INFLUXDB_DATABASE:-feinstaub}
