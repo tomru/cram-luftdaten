@@ -45,7 +45,7 @@ NODE=esp8266-$SENSOR_ID
 
 STRIP_CSV_HEADERS="tail -n +2"
 
-cat $SCR_FILE                                                       \
+cat $SRC_FILE                                                       \
     | $STRIP_CSV_HEADERS                                            \
     | gawk -v db="$DATABASE" -v node="$NODE"                        \
         'BEGIN { FS = ";" } ;                                       \
