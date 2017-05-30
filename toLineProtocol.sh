@@ -35,13 +35,12 @@
 # TODO:
 #  - check if CSV export is in UTC ?
 
-SRC_FILE="${1:-/dev/stdin}"
+SRC_FILE=${1:-/dev/stdin}
 
-DATABASE=feinstaub
-SENSOR_ID=16229960
+DATABASE=${INFLUX_DATABASE:-feinstaub}
+SENSOR_ID=${SENSOR_ID:-16229960}
 
 NODE=esp8266-$SENSOR_ID
-
 
 STRIP_CSV_HEADERS="tail -n +2"
 
