@@ -1,4 +1,4 @@
-# Write Luftdaten CSV to InfluxDB Line Protocol
+# Write Luftdaten CSV to a InfluxDB
 
 Helpers to write CSV files from https://www.madavi.de/sensor/csvfiles.php to
 your InfluxDb.
