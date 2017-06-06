@@ -45,14 +45,13 @@ SENSOR_ID=${SENSOR_ID:-16229960}
 
 NODE=esp8266-$SENSOR_ID
 
-STRIP_CSV_HEADERS="tail -n +2"
-
-cat $SRC_FILE                                                   \
-    | $STRIP_CSV_HEADERS                                        \
-    | gawk -v db="$DATABASE" -v node="$NODE"                    \
-        'BEGIN { FS = ";" } ;                                   \
-        {   convertDate = "date -u --date=\""$1"\" +%s";        \
-            convertDate| getline timestamp;                     \
-            close(convertDate);                                 \
-            print db",node="node" SDS_P1="$8",SDS_P2="$9",humidity="$11",min_micro="$18",max_micro="$19",samples="$17",temperature="$10" "timestamp }'
+cat $SRC_FILE                                                       \
+    | gawk -v db="$DATABASE" -v node="$NODE"                        \
+        'BEGIN { FS = ";" } ;                                       \
+        {   if ($1 != "Time") {                                     \
+                convertDate = "date -u --date=\""$1"\" +%s";        \
+                convertDate| getline timestamp;                     \
+                close(convertDate);                                 \
+                print db",node="node" SDS_P1="$8",SDS_P2="$9",humidity="$11",min_micro="$18",max_micro="$19",samples="$17",temperature="$10" "timestamp } \
+            }'
 
