@@ -1,10 +1,17 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 #
 # Converts CSV exports from https://www.madavi.de/sensor/csvfiles.php to
 # InfluxDB LineProtocol https://docs.influxdata.com/influxdb/v1.2/write_protocols/line_protocol_reference/
 #
 # Note: timestamps are in seconds, therefore precision "s" needs to be set
 # when writing, see https://docs.influxdata.com/influxdb/v1.2/tools/api/#write
+#
+# Settings:
+#
+# Please set
+#   * SENSOR_ID
+#   * INFLUXDB_DATABASE
+# in your environment
 
 # CSV file specs
 #
@@ -32,26 +39,38 @@
 # |             |          | 20 Signal             | -91
 # | node        | tag      | -- --                 | e.g. esp8266-16229960
 #
-# TODO:
-#   - using "date" to parse the UTC date for each line is super slow, but
-#     works. There must be something better out there.
 
-set -e
+import os
+import sys
+import csv
+from datetime import datetime, timedelta
 
-SRC_FILE=${1:-/dev/stdin}
+def getTimestamp(timestr):
+    naiveDt = datetime.strptime(timestr, '%Y/%m/%d %H:%M:%S');
+    utcTimestamp = (naiveDt - datetime(1970, 1, 1)) / timedelta(seconds=1)
+    return int(utcTimestamp)
 
-DATABASE=${INFLUXDB_DATABASE:-feinstaub}
-SENSOR_ID=${SENSOR_ID:-16229960}
+sensor_id = os.environ.get('SENSOR_ID', '16229960')
+database = os.environ.get('INFLUXDB_DATABASE', 'feinstaub')
 
-NODE=esp8266-$SENSOR_ID
+node = 'esp8266-' + sensor_id
+outline = '{database},node={node} SDS_P1={sds_p1},SDS_P2={sds_p2},humidity={humidity},min_micro={min_micro},max_micro={max_micro},samples={samples},temperature={temperature} {timestamp}'
 
-cat $SRC_FILE                                                       \
-    | gawk -v db="$DATABASE" -v node="$NODE"                        \
-        'BEGIN { FS = ";" } ;                                       \
-        {   if ($1 != "Time") {                                     \
-                convertDate = "date -u --date=\""$1"\" +%s";        \
-                convertDate| getline timestamp;                     \
-                close(convertDate);                                 \
-                print db",node="node" SDS_P1="$8",SDS_P2="$9",humidity="$11",min_micro="$18",max_micro="$19",samples="$17",temperature="$10" "timestamp } \
-            }'
+reader = csv.reader(sys.stdin, delimiter=';')
+for row in reader:
+    if (row[0] == 'Time'):
+        continue
 
+    values = {}
+    values['database'] = database
+    values['node'] = node
+    values['timestamp'] = getTimestamp(row[0])
+    values['sds_p1'] = row[7]
+    values['sds_p2'] = row[8]
+    values['temperature'] = row[9]
+    values['humidity'] = row[10]
+    values['samples'] = row[16]
+    values['min_micro'] = row[17]
+    values['max_micro'] = row[18]
+
+    print(outline.format(**values))

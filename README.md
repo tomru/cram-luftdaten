@@ -10,6 +10,6 @@ your InfluxDb.
 * delete all lines that you already have in your DB (keep the header)
 * export settings as environment vars in case they differ from the defaults
   (INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_DATABASE, SENSOR_ID)
-* run `cat <csv.file> | ./toLineProtocol.sh | ./toInfluxDb.sh`
+* run `cat <csv.file> | ./toLineProtocol.py | ./toInfluxDb.sh`
 
 I should advise you to backup the DB first :stuck_out_tongue:
