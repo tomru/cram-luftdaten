@@ -3,6 +3,8 @@
 Helpers to write CSV files from https://www.madavi.de/sensor/csvfiles.php to
 your InfluxDb.
 
+You can use this to fill up your local InfluxDB with previous data or fill data gaps in your influxdb.
+
 # How does it work
 
 * get the relevant CSVs from https://www.madavi.de/sensor/csvfiles.php (dates
