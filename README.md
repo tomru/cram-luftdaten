@@ -1,4 +1,4 @@
-# Write Luftdaten CSV to a InfluxDB
+# Cram Luftdaten
 
 Helpers to write CSV files from https://www.madavi.de/sensor/csvfiles.php to
 your InfluxDb.
