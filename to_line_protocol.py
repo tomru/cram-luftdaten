@@ -51,40 +51,41 @@ import sys
 import csv
 from datetime import datetime, timedelta
 
+
 def get_timestamp(timestr):
     """Converts CSV time value to a UTC timestamp in seconds"""
-    naive_dt = datetime.strptime(timestr, '%Y/%m/%d %H:%M:%S')
+    naive_dt = datetime.strptime(timestr, "%Y/%m/%d %H:%M:%S")
     utc = (naive_dt - datetime(1970, 1, 1)) / timedelta(seconds=1)
     return int(utc)
 
-SENSOR_ID = os.environ.get('SENSOR_ID', '16229960')
-DATABASE = os.environ.get('INFLUXDB_DATABASE', 'sensors')
 
-NODE = 'esp8266-' + SENSOR_ID
+SENSOR_ID = os.environ.get("SENSOR_ID", "16229960")
+DATABASE = os.environ.get("INFLUXDB_DATABASE", "sensors")
+
+NODE = "esp8266-" + SENSOR_ID
 
 NAME_MAP = {
-    'Humidity':
-    'humidity',
-    'Max_cycle': 'max_micro',
-    'Samples': 'samples',
-    'Min_cycle': 'min_micro',
-    'Signal': 'signal',
-    'Temp': 'temperature'
+    "Humidity": "humidity",
+    "Max_cycle": "max_micro",
+    "Samples": "samples",
+    "Min_cycle": "min_micro",
+    "Signal": "signal",
+    "Temp": "temperature",
 }
 
-READER = csv.DictReader(sys.stdin, delimiter=';')
+READER = csv.DictReader(sys.stdin, delimiter=";")
 for row in READER:
     measurements = []
     for header, value in row.items():
-        if header == 'Time' or not value:
+        if header == "Time" or not value:
             continue
-        measurements.append('{0}={1}'.format(NAME_MAP.get(header, header), value))
+        measurements.append("{0}={1}".format(NAME_MAP.get(header, header), value))
 
     values = {
-        'database': DATABASE,
-        'node': NODE,
-        'measurements': ','.join(measurements),
-        'time': get_timestamp(row['Time'])
+        "database": DATABASE,
+        "node": NODE,
+        "measurements": ",".join(measurements),
+        "time": get_timestamp(row["Time"]),
     }
 
-    print('{database},node={node} {measurements} {time}'.format(**values))
+    print("{database},node={node} {measurements} {time}".format(**values))
