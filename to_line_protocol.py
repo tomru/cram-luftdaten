@@ -75,6 +75,10 @@ NAME_MAP = {
 
 READER = csv.DictReader(sys.stdin, delimiter=";")
 for row in READER:
+    # catch multiple column headers
+    if row["Time"] == "Time":
+        continue
+
     measurements = []
     for header, value in row.items():
         if header == "Time" or not value:
