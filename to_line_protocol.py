@@ -16,11 +16,11 @@ CSV file spec:
 
     Semiconlos are used as delimiters. First line are the header columns.
     Generally the column name is used as a DB field name, but there are some legacy
-    exceptions like "time" instead of "Time" as listed in the following table.
+    exceptions like "temperature" instead of "Temp" as listed in the following table.
 
-    | DB Field           | DB field | CSV Column         | CSV Format
+    | DB Field name      | DB field | CSV Column         | CSV Format
     |--------------------|----------|--------------------|--------------------------
-    | time               | time     | Time               | 2017/05/19 00:00:11 (UTC)
+    | none               | time     | Time               | 2017/05/19 00:00:11 (UTC)
     | ?                  | ?        | durP1              |
     | ?                  | ?        | ratioP1            |
     | ?                  | ?        | P1                 |
@@ -75,6 +75,12 @@ NAME_MAP = {
 
 READER = csv.DictReader(sys.stdin, delimiter=";")
 for row in READER:
+    # error out on legacy format until it's clear what that format is
+    if row["Time"] == "time":
+        raise Exception(
+            "Looks like a legacy format not supported yet. Send the file to the author please."
+        )
+
     # catch multiple column headers
     if row["Time"] == "Time":
         continue
