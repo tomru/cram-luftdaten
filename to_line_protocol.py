@@ -15,8 +15,10 @@ Settings:
 CSV file spec:
 
     Semiconlos are used as delimiters. First line are the header columns.
-    Generally the column name is used as a DB field name, but there are some legacy
-    exceptions like "temperature" instead of "Temp" as listed in the following table.
+    Generally the column name is used as a DB field name.
+    
+    The format before 2018-10-01 is not supported by this script and should
+    be manually converted.
 
     | DB Field name      | DB field | CSV Column         | CSV Format
     |--------------------|----------|--------------------|--------------------------
