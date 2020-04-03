@@ -7,7 +7,8 @@ You can use this to fill up your local InfluxDB with previous data or fill data 
 
 # How does it work
 
-* get the relevant CSVs from https://www.madavi.de/sensor/csvfiles.php
+* get the relevant CSVs from https://www.madavi.de/sensor/csvfiles.php 
+  **Only data after 2018-10-01 is supported, previous format not yet. PRs welcome**
 * delete all lines that you already have in your DB (you must keep the csv header line)
 * export settings as environment vars in case they differ from the defaults
   (INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_DATABASE, SENSOR_ID)
